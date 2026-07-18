@@ -154,22 +154,11 @@
 
   <!-- 2. TESTIMONIAL -->
   <section style="background:#F7F9FB;padding:clamp(64px,9vw,112px) 22px;border-top:1px solid #EDF1F5;border-bottom:1px solid #EDF1F5;">
-    <div style="max-width:760px;margin:0 auto;text-align:center;background:#fff;border:1px solid #E6ECF1;border-radius:24px;box-shadow:0 24px 60px -32px rgba(20,50,75,0.18);padding:clamp(36px,5vw,56px) clamp(24px,5vw,56px);">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:#F4F5F6;border:1px solid #E5E7EB;padding:7px 14px;border-radius:999px;margin-bottom:22px;">
-        <span style="font-size:15px;">🛍️</span>
-        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;color:#13222E;">Shopify App Store</span>
-        <span style="font-size:13px;color:#7A8893;font-weight:500;">· Verified merchant review</span>
-      </div>
-      <div style="color:#F2A93B;font-size:18px;letter-spacing:2px;margin-bottom:24px;">★★★★★</div>
-      <blockquote style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:clamp(17px,2.2vw,22px);line-height:1.4;letter-spacing:-0.025em;color:#13222E;margin:0 0 32px;text-wrap:balance;">"Very useful shopify app!! Our store has over 1700+ ratings. Summarising the reviews is something we always hope to do. This plugin get it working with ease. Our shop is using Chinese as primary language. The team (especially Liam) kindly helped us to onboard immediately. I highly recommend this app to every shop owners!"</blockquote>
-      <div style="display:inline-flex;align-items:center;gap:14px;">
-        <div style="width:52px;height:52px;border-radius:50%;flex:none;background:linear-gradient(135deg,#E4EAF0 0%,#C8D5E0 100%);display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;color:#7A8893;">AG</div>
-        <div style="text-align:left;">
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15.5px;color:#13222E;">Afterwork Grocery</div>
-          <div style="font-size:13.5px;color:#7A8893;font-weight:600;">Sonderverwaltungsregion Hongkong · 20. Juni 2025</div>
-        </div>
-        <div style="margin-left:8px;padding:8px 14px;border-radius:11px;background:#E9F4EF;color:#0F6E56;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;">1700+ ratings</div>
-      </div>
+    <div style="max-width:760px;margin:0 auto;position:relative;">
+      <button id="testiPrev" aria-label="Previous review" style="display:none;position:absolute;top:50%;left:clamp(-8px,-3vw,-20px);transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid #E6ECF1;box-shadow:0 6px 16px rgba(20,50,75,0.12);cursor:pointer;font-size:16px;color:#33454F;z-index:2;">‹</button>
+      <button id="testiNext" aria-label="Next review" style="display:none;position:absolute;top:50%;right:clamp(-8px,-3vw,-20px);transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid #E6ECF1;box-shadow:0 6px 16px rgba(20,50,75,0.12);cursor:pointer;font-size:16px;color:#33454F;z-index:2;">›</button>
+      <div id="testimonialCard" style="text-align:center;background:#fff;border:1px solid #E6ECF1;border-radius:24px;box-shadow:0 24px 60px -32px rgba(20,50,75,0.18);padding:clamp(36px,5vw,56px) clamp(24px,5vw,56px);"></div>
+      <div id="testimonialDots" style="display:flex;justify-content:center;gap:8px;margin-top:24px;"></div>
     </div>
   </section>
 
@@ -340,6 +329,75 @@
 </div>
 
 <script>
+  // ---- Testimonial carousel ----
+  var TESTIMONIALS = [
+    {
+      initials: 'AG', name: 'Afterwork Grocery', location: 'Sonderverwaltungsregion Hongkong', date: '20. Juni 2025', badge: '1700+ ratings',
+      quote: 'Very useful shopify app!! Our store has over 1700+ ratings. Summarising the reviews is something we always hope to do. This plugin get it working with ease. Our shop is using Chinese as primary language. The team (especially Liam) kindly helped us to onboard immediately. I highly recommend this app to every shop owners!'
+    },
+    {
+      initials: 'EA', name: "Elva's All Naturals", location: 'Kanada', date: '6. November 2024', badge: '2 Tage mit der App',
+      quote: 'I am really delighted with this app, and the amazing customer service I received. Liam was lovely to work with, and SUPER helpful with providing assistance. I like that this app provides a summary of reviews, similar to the way Amazon does, which helps customers understand more quickly what is most important to know about a product. Customers can get bogged down and confused (and abandon shopping) when there are multiple reviews, and it really helps to have this summary. Great app!'
+    },
+    {
+      initials: 'L64', name: 'Latitude 64°', location: 'Schweden', date: '22. August 2025', badge: '2 Tage mit der App',
+      quote: 'Easy to use, with great support from Liam. It helps our customers get a quick summary without having to read through all the reviews. Since Judge.me doesn’t offer this natively, it’s a great solution.'
+    }
+  ];
+  var testiIndex = 0;
+  var testiTimer = null;
+  var testiCard = document.getElementById('testimonialCard');
+  var testiDots = document.getElementById('testimonialDots');
+  var testiPrev = document.getElementById('testiPrev');
+  var testiNext = document.getElementById('testiNext');
+
+  function renderTestimonial() {
+    var t = TESTIMONIALS[testiIndex];
+    testiCard.innerHTML =
+      '<div style="display:inline-flex;align-items:center;gap:8px;background:#F4F5F6;border:1px solid #E5E7EB;padding:7px 14px;border-radius:999px;margin-bottom:22px;">' +
+      '<span style="font-size:15px;">🛍️</span>' +
+      '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;font-size:13px;color:#13222E;">Shopify App Store</span>' +
+      '<span style="font-size:13px;color:#7A8893;font-weight:500;">· Verified merchant review</span>' +
+      '</div>' +
+      '<div style="color:#F2A93B;font-size:18px;letter-spacing:2px;margin-bottom:24px;">★★★★★</div>' +
+      '<blockquote style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:700;font-size:clamp(17px,2.2vw,22px);line-height:1.4;letter-spacing:-0.025em;color:#13222E;margin:0 0 32px;text-wrap:balance;">"' + t.quote + '"</blockquote>' +
+      '<div style="display:inline-flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;">' +
+      '<div style="width:52px;height:52px;border-radius:50%;flex:none;background:linear-gradient(135deg,#E4EAF0 0%,#C8D5E0 100%);display:flex;align-items:center;justify-content:center;font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;font-size:15px;color:#7A8893;">' + t.initials + '</div>' +
+      '<div style="text-align:left;">' +
+      '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:700;font-size:15.5px;color:#13222E;">' + t.name + '</div>' +
+      '<div style="font-size:13.5px;color:#7A8893;font-weight:600;">' + t.location + ' · ' + t.date + '</div>' +
+      '</div>' +
+      '<div style="margin-left:8px;padding:8px 14px;border-radius:11px;background:#E9F4EF;color:#0F6E56;font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;font-size:14px;">' + t.badge + '</div>' +
+      '</div>';
+    testiDots.innerHTML = TESTIMONIALS.map(function (_, i) {
+      return '<button data-i="' + i + '" aria-label="Review ' + (i + 1) + '" style="width:' + (i === testiIndex ? '22px' : '8px') + ';height:8px;border-radius:999px;border:none;padding:0;cursor:pointer;background:' + (i === testiIndex ? '#185FA5' : '#D9E4EE') + ';transition:width .2s,background .2s;"></button>';
+    }).join('');
+    testiDots.querySelectorAll('button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        goToTestimonial(parseInt(btn.getAttribute('data-i'), 10));
+      });
+    });
+  }
+  function goToTestimonial(i) {
+    testiIndex = (i + TESTIMONIALS.length) % TESTIMONIALS.length;
+    renderTestimonial();
+    restartTestiAutoplay();
+  }
+  function restartTestiAutoplay() {
+    if (testiTimer) clearInterval(testiTimer);
+    testiTimer = setInterval(function () { goToTestimonial(testiIndex + 1); }, 7000);
+  }
+  testiPrev.style.display = 'flex';
+  testiPrev.style.alignItems = 'center';
+  testiPrev.style.justifyContent = 'center';
+  testiNext.style.display = 'flex';
+  testiNext.style.alignItems = 'center';
+  testiNext.style.justifyContent = 'center';
+  testiPrev.addEventListener('click', function () { goToTestimonial(testiIndex - 1); });
+  testiNext.addEventListener('click', function () { goToTestimonial(testiIndex + 1); });
+  renderTestimonial();
+  restartTestiAutoplay();
+
   // ---- FAQ accordion ----
   var FAQS = [
     { q: 'Is it really free?', a: 'Yes. The Free plan covers up to 50 products with auto summaries and the storefront widget — no credit card required to install or to keep using it.' },
