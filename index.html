@@ -332,15 +332,15 @@
   // ---- Testimonial carousel ----
   var TESTIMONIALS = [
     {
-      initials: 'AG', name: 'Afterwork Grocery', location: 'Sonderverwaltungsregion Hongkong', date: '20. Juni 2025', badge: '1700+ ratings',
+      initials: 'AG', name: 'Afterwork Grocery', location: 'Hong Kong', date: 'June 20, 2025', badge: '1700+ ratings',
       quote: 'Very useful shopify app!! Our store has over 1700+ ratings. Summarising the reviews is something we always hope to do. This plugin get it working with ease. Our shop is using Chinese as primary language. The team (especially Liam) kindly helped us to onboard immediately. I highly recommend this app to every shop owners!'
     },
     {
-      initials: 'EA', name: "Elva's All Naturals", location: 'Kanada', date: '6. November 2024', badge: '2 Tage mit der App',
+      initials: 'EA', name: "Elva's All Naturals", location: 'Canada', date: 'November 6, 2024', badge: null,
       quote: 'I am really delighted with this app, and the amazing customer service I received. Liam was lovely to work with, and SUPER helpful with providing assistance. I like that this app provides a summary of reviews, similar to the way Amazon does, which helps customers understand more quickly what is most important to know about a product. Customers can get bogged down and confused (and abandon shopping) when there are multiple reviews, and it really helps to have this summary. Great app!'
     },
     {
-      initials: 'L64', name: 'Latitude 64°', location: 'Schweden', date: '22. August 2025', badge: '2 Tage mit der App',
+      initials: 'L64', name: 'Latitude 64°', location: 'Sweden', date: 'August 22, 2025', badge: null,
       quote: 'Easy to use, with great support from Liam. It helps our customers get a quick summary without having to read through all the reviews. Since Judge.me doesn’t offer this natively, it’s a great solution.'
     }
   ];
@@ -367,7 +367,7 @@
       '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:700;font-size:15.5px;color:#13222E;">' + t.name + '</div>' +
       '<div style="font-size:13.5px;color:#7A8893;font-weight:600;">' + t.location + ' · ' + t.date + '</div>' +
       '</div>' +
-      '<div style="margin-left:8px;padding:8px 14px;border-radius:11px;background:#E9F4EF;color:#0F6E56;font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;font-size:14px;">' + t.badge + '</div>' +
+      (t.badge ? '<div style="margin-left:8px;padding:8px 14px;border-radius:11px;background:#E9F4EF;color:#0F6E56;font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;font-size:14px;">' + t.badge + '</div>' : '') +
       '</div>';
     testiDots.innerHTML = TESTIMONIALS.map(function (_, i) {
       return '<button data-i="' + i + '" aria-label="Review ' + (i + 1) + '" style="width:' + (i === testiIndex ? '22px' : '8px') + ';height:8px;border-radius:999px;border:none;padding:0;cursor:pointer;background:' + (i === testiIndex ? '#185FA5' : '#D9E4EE') + ';transition:width .2s,background .2s;"></button>';
